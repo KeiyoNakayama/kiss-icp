@@ -83,8 +83,9 @@ OdometryServer::OdometryServer(const rclcpp::NodeOptions &options)
     kiss_icp_ = std::make_unique<kiss_icp::pipeline::KissICP>(config);
 
     // Initialize subscribers
+    auto pointcloud_qos = rclcpp::QoS(rclcpp::KeepLast(10000)).reliable();
     pointcloud_sub_ = create_subscription<sensor_msgs::msg::PointCloud2>(
-        "pointcloud_topic", rclcpp::SensorDataQoS(),
+        "pointcloud_topic", pointcloud_qos,
         std::bind(&OdometryServer::RegisterFrame, this, std::placeholders::_1));
 
     // Initialize publishers
